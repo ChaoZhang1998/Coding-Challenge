@@ -12,15 +12,21 @@ let seedPoints = [];
 let personDrawing = false;
 
 function preload() {
-  sketchRNN = ml5.sketchRNN('catpig');
+  sketchRNN = ml5.sketchRNN('butterfly');
 }
 
 function startDrawing() {
-  background(255);
+  // background(255);
 
   loop();
 
   personDrawing = true;
+  x = mouseX;
+  y = mouseY;
+}
+
+function endDrawing() {
+  personDrawing = false;
   x = mouseX;
   y = mouseY;
 }
@@ -40,7 +46,7 @@ function sketchRNNStart() {
   // Drawing simplified path
   background(255);
   stroke(0);
-  strokeWeight(4);
+  strokeWeight(8);
   beginShape();
   noFill();
   for (let v of rdpPoints) {
@@ -66,9 +72,10 @@ function sketchRNNStart() {
 }
 
 function setup() {
-  let canvas = createCanvas(400, 400);
+  let canvas = createCanvas(800, 800);
   canvas.mousePressed(startDrawing);
-  canvas.mouseReleased(sketchRNNStart);
+  canvas.mouseReleased(endDrawing);
+  //canvas.mouseReleased(sketchRNNStart);
   background(255);
   //sketchRNN.generate(gotStrokePath);
   console.log('model loaded');
@@ -82,7 +89,7 @@ function gotStrokePath(error, strokePath) {
 
 function draw() {
   stroke(0);
-  strokeWeight(4);
+  strokeWeight(8);
 
   if (personDrawing) {
     line(mouseX, mouseY, pmouseX, pmouseY);
@@ -95,7 +102,7 @@ function draw() {
       // sketchRNNStart();
       // console.log(currentStroke);
       // nextPen = 'down';
-      
+
       seedPoints = [];
       currentStroke = null;
       nextPen = 'down';
@@ -113,5 +120,12 @@ function draw() {
     nextPen = currentStroke.pen;
     currentStroke = null;
     sketchRNN.generate(gotStrokePath);
+  }
+}
+
+function keyPressed() {
+  if (keyCode == ENTER) {
+    console.log("1");
+    sketchRNNStart();
   }
 }
